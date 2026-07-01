@@ -53,14 +53,27 @@ function parseCsv(csv: string): string[][] {
   return rows.filter((r) => r.some((cell) => cell.trim().length > 0));
 }
 
+const QUESTION_HEADER_ALIASES = ["question", "คำถามที่ลูกค้ามักถาม"];
+const ANSWER_HEADER_ALIASES = ["answer", "แนวทางตอบเบื้องต้น (chatbot)"];
+const CATEGORY_HEADER_ALIASES = ["category", "หมวดหมู่"];
+const ACTIVE_HEADER_ALIASES = ["active", "เปิดใช้งาน"];
+
+function findColumnIndex(header: string[], aliases: string[]): number {
+  for (const alias of aliases) {
+    const idx = header.indexOf(alias);
+    if (idx >= 0) return idx;
+  }
+  return -1;
+}
+
 function rowsToFaqItems(rows: string[][]): FaqItem[] {
   if (rows.length === 0) return [];
 
   const header = rows[0].map((h) => h.trim().toLowerCase());
-  const questionIdx = header.indexOf("question");
-  const answerIdx = header.indexOf("answer");
-  const categoryIdx = header.indexOf("category");
-  const activeIdx = header.indexOf("active");
+  const questionIdx = findColumnIndex(header, QUESTION_HEADER_ALIASES);
+  const answerIdx = findColumnIndex(header, ANSWER_HEADER_ALIASES);
+  const categoryIdx = findColumnIndex(header, CATEGORY_HEADER_ALIASES);
+  const activeIdx = findColumnIndex(header, ACTIVE_HEADER_ALIASES);
 
   const items: FaqItem[] = [];
   for (let i = 1; i < rows.length; i++) {

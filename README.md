@@ -27,7 +27,11 @@ lib/
    - `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET` — จาก LINE Developers Console (Messaging API channel)
    - `GEMINI_API_KEY` — จาก Google AI Studio
    - `SHEET_CSV_URL` — URL ของ Google Sheet ที่ publish เป็น CSV (File > Share > Publish to web > CSV)
-2. Google Sheet ต้องมีคอลัมน์: `question`, `answer`, `category`, `active` (TRUE/FALSE) ในแถวแรก
+2. Google Sheet ต้องมีคอลัมน์ในแถวแรก (รองรับทั้งชื่ออังกฤษและไทย):
+   - คำถาม: `question` หรือ `คำถามที่ลูกค้ามักถาม`
+   - คำตอบ: `answer` หรือ `แนวทางตอบเบื้องต้น (Chatbot)`
+   - หมวดหมู่: `category` หรือ `หมวดหมู่`
+   - เปิด/ปิดใช้งาน (ไม่บังคับ ถ้าไม่มีถือว่าทุกแถว active): `active` (TRUE/FALSE) หรือ `เปิดใช้งาน`
 3. แก้เบอร์โทร/LINE ID สำรองใน `lib/gemini.ts` (`DEFAULT_REPLY`) ก่อนใช้งานจริง — ตอนนี้เป็น placeholder `[เบอร์โทร Win]`
 
 ## Dev
