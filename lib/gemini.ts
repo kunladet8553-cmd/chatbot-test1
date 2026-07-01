@@ -82,6 +82,7 @@ export async function askGemini(question: string, faq: FaqItem[]): Promise<strin
           systemInstruction,
           temperature: 1.0,
           maxOutputTokens: 1024,
+          thinkingConfig: { thinkingBudget: 0 },
         },
       }),
       GEMINI_TIMEOUT_MS
