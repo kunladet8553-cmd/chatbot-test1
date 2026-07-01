@@ -28,3 +28,18 @@ export async function replyText(replyToken: string, text: string): Promise<void>
     console.error("[line] replyMessage failed:", err);
   }
 }
+
+export async function notifyAdmin(text: string): Promise<void> {
+  const adminUserId = process.env.ADMIN_LINE_USER_ID;
+  if (!adminUserId) return;
+
+  const lineClient = getLineClient();
+  try {
+    await lineClient.pushMessage({
+      to: adminUserId,
+      messages: [{ type: "text", text }],
+    });
+  } catch (err) {
+    console.error("[line] notifyAdmin push failed:", err);
+  }
+}

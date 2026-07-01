@@ -2,9 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { validateSignature, type WebhookEvent } from "@line/bot-sdk";
 import { getFaq } from "@/lib/sheet";
 import { askGemini, DEFAULT_REPLY } from "@/lib/gemini";
-import { replyText } from "@/lib/line";
+import { replyText, notifyAdmin } from "@/lib/line";
 
 export const runtime = "nodejs";
+
+const HUMAN_HANDOFF_KEYWORDS = [
+  "คุยกับคน",
+  "คุยกับแอดมิน",
+  "คุยกับพี่win",
+  "คุยกับพี่ win",
+  "ขอคุยกับเจ้าหน้าที่",
+  "อยากคุยกับคน",
+  "ติดต่อแอดมิน",
+];
 
 export async function POST(request: NextRequest) {
   const signature = request.headers.get("x-line-signature");
@@ -46,8 +56,14 @@ export async function POST(request: NextRequest) {
       }
 
       const { replyToken } = event;
+      console.log("[line-webhook] from userId:", event.source.userId);
       try {
         const userMessage = event.message.text;
+
+        if (HUMAN_HANDOFF_KEYWORDS.some((k) => userMessage.toLowerCase().includes(k))) {
+          notifyAdmin(`🔔 ลูกค้าขอคุยกับคน:\n${userMessage}`);
+        }
+
         const faq = await getFaq();
         const reply = await askGemini(userMessage, faq);
         await replyText(replyToken, reply);
