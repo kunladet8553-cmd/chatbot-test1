@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
   const channelSecret = process.env.LINE_CHANNEL_SECRET;
 
   if (!signature || !channelSecret) {
+    console.warn("[line-webhook] missing signature or channel secret");
     return new NextResponse(null, { status: 401 });
   }
 
@@ -24,6 +25,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!isValid) {
+    console.warn("[line-webhook] signature validation failed");
     return new NextResponse(null, { status: 401 });
   }
 
